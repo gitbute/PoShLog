@@ -14,21 +14,17 @@ Describe "PoShLog-main" {
 
 # Checks for correct style in the module-functions (commentBasedHelp etc)
 Describe "PoShLog-styleChecks" {
-    BeforeAll {
-        $functions = @( Get-ChildItem -Path "$here\..\src\functions\*.ps1" -Recurse )
-    }
-
     # Get-Content all functions/classes from module and check for commentbased-help
-    foreach ($import in $functions) {
+    foreach ($scriptFile in @( Get-ChildItem -Path "$here\..\src\functions\*.ps1" -Recurse )) {
         try {
-            $content = Get-Content $import.fullname
-            It "$($import.name) has comment-based-help" {
+            $content = Get-Content $scriptFile.fullname
+            It "$($scriptFile.name) has comment-based-help" {
                 #First line of content starts with "<#"
                 $content[1].startsWith("`t<#") | Should -BeTrue
             }
         }
         catch {
-            Write-Error -Message "Failed to get content for $($import.fullname): $_"
+            Write-Error -Message "Failed to get content for $($scriptFile.fullname): $_"
         }
     }
 }
